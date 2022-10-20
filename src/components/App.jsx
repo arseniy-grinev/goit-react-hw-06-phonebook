@@ -8,13 +8,34 @@ import FilterByName from './FilterByName';
 class App extends Component {
   state = {
     contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+      // { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      // { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      // { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      // { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const contactsList = localStorage.getItem('contactsList');
+    const parsedContactsList = JSON.parse(contactsList);
+
+    if (parsedContactsList) {
+      this.setState({ contacts: parsedContactsList });
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    const nextContactsList = this.state.contacts;
+    const prevContactsList = prevState.contacts;
+
+    if (nextContactsList !== prevContactsList) {
+      console.log(
+        'Обновилось поле contactsList, записываю ContactsList в хранилище'
+      );
+      localStorage.setItem('contactsList', JSON.stringify(nextContactsList));
+    }
+  }
 
   addContact = ({ name, number }) => {
     const contact = {
