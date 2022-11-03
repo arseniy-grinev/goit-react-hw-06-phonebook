@@ -9,19 +9,6 @@ export default function App() {
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
 
-  useEffect(() => {
-    const contactsList = localStorage.getItem('contactsList');
-    const parsedContactsList = JSON.parse(contactsList);
-    setContacts(parsedContactsList);
-  }, []);
-
-  useEffect(() => {
-    if (contacts.length === 0) {
-      return;
-    }
-    localStorage.setItem('contactsList', JSON.stringify(contacts));
-  }, [contacts]);
-
   const addContact = ({ name, number }) => {
     const contact = {
       id: nanoid(),
@@ -53,6 +40,19 @@ export default function App() {
   const sortedContacts = filteredContacts.sort((x, y) =>
     x.name.localeCompare(y.name)
   );
+
+  useEffect(() => {
+    const contactsList = localStorage.getItem('contactsList');
+    const parsedContactsList = JSON.parse(contactsList);
+    setContacts(parsedContactsList);
+  }, []);
+
+  useEffect(() => {
+    if (contacts.length === 0) {
+      return;
+    }
+    localStorage.setItem('contactsList', JSON.stringify(contacts));
+  }, [contacts]);
 
   return (
     <>
