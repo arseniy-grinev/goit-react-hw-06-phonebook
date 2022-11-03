@@ -5,7 +5,7 @@ import SectionWrap from './SectionWrap';
 import ContactsList from './ContactsList';
 import FilterByName from './FilterByName';
 
-function App() {
+export default function App() {
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
 
@@ -37,9 +37,9 @@ function App() {
   };
 
   const deleteContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-    }));
+    setContacts(prevContacts =>
+      prevContacts.filter(contact => contact.id !== contactId)
+    );
   };
 
   const changeFilter = e => {
@@ -50,13 +50,10 @@ function App() {
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilter)
   );
+  const sortedContacts = filteredContacts.sort((x, y) =>
+    x.name.localeCompare(y.name)
+  );
 
-  // const getSortedContacts = contacts => {
-  //   return contacts.sort((x, y) => x.name.localeCompare(y.name));
-  // };
-
-  // const filteredContacts = getFilteredContacts(contacts);
-  // const sortedContacts = getSortedContacts(filteredContacts);
   return (
     <>
       <SectionWrap title="Phonebook">
@@ -64,13 +61,13 @@ function App() {
       </SectionWrap>
       <SectionWrap title="Contacts">
         <FilterByName value={filter} onChange={changeFilter} />
-        <ContactsList
-          contacts={filteredContacts}
-          deleteContact={deleteContact}
-        />
+        {!sortedContacts && (
+          <ContactsList
+            contacts={sortedContacts}
+            deleteContact={deleteContact}
+          />
+        )}
       </SectionWrap>
     </>
   );
 }
-
-export default App;
