@@ -37,6 +37,7 @@ export default function App() {
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilter)
   );
+
   const sortedContacts = filteredContacts.sort((x, y) =>
     x.name.localeCompare(y.name)
   );
@@ -44,6 +45,9 @@ export default function App() {
   useEffect(() => {
     const contactsList = localStorage.getItem('contactsList');
     const parsedContactsList = JSON.parse(contactsList);
+    if (!parsedContactsList) {
+      return;
+    }
     setContacts(parsedContactsList);
   }, []);
 
@@ -61,12 +65,8 @@ export default function App() {
       </SectionWrap>
       <SectionWrap title="Contacts">
         <FilterByName value={filter} onChange={changeFilter} />
-        {!sortedContacts && (
-          <ContactsList
-            contacts={sortedContacts}
-            deleteContact={deleteContact}
-          />
-        )}
+
+        <ContactsList contacts={sortedContacts} deleteContact={deleteContact} />
       </SectionWrap>
     </>
   );
