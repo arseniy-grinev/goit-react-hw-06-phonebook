@@ -2,8 +2,14 @@ import { React } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import * as yup from 'yup';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { AddContactBtn, FormLabel, Error } from './FormAddContact.styled';
+import { Formik, ErrorMessage } from 'formik';
+import {
+  AddContactBtn,
+  FormLabel,
+  Error,
+  FormContact,
+  Input,
+} from './FormAddContact.styled';
 
 const messeges = {
   name: 'Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore Artagnan',
@@ -20,34 +26,6 @@ const initialValues = {
   name: '',
   number: '',
 };
-
-const FormContact = styled(Form)`
-  margin-left: 50px;
-  margin-top: 20px;
-  width: 400px;
-  padding: 20px;
-  align-items: center;
-  border: 1px solid lightgray;
-  border-radius: 4px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.2),
-    0px 2px 2px rgba(0, 0, 0, 0.2);
-`;
-
-const Input = styled(Field)`
-  border: 1px solid lightgray;
-  margin: 20px;
-  margin-top: 5px;
-  font-size: 16px;
-  width: 360px;
-  outline: none;
-  border-radius: 2px;
-  &:hover,
-  &:focus,
-  &:active {
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.2),
-      0px 1px 1px rgba(0, 0, 0, 0.2);
-  }
-`;
 
 const ErrorName = () => {
   return <Error> {messeges.name} </Error>;

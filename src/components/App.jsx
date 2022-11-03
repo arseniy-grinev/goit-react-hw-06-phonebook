@@ -1,100 +1,96 @@
-import { React, Component } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import FormAddContact from './FormAddContact';
 import SectionWrap from './SectionWrap';
 import ContactsList from './ContactsList';
 import FilterByName from './FilterByName';
 
-class App extends Component {
-  state = {
-    contacts: [
-      // { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      // { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      // { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      // { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
-  };
+function App() {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
 
-  componentDidMount() {
+  useEffect(() => {
     const contactsList = localStorage.getItem('contactsList');
     const parsedContactsList = JSON.parse(contactsList);
+    setContacts(parsedContactsList);
+  }, []);
 
-    if (parsedContactsList) {
-      this.setState({ contacts: parsedContactsList });
+  useEffect(() => {
+    if (contacts.length === 0) {
+      return;
     }
-  }
+    localStorage.setItem('contactsList', JSON.stringify(contacts));
+  }, [contacts]);
 
-  componentDidUpdate(prevState) {
-    const nextContactsList = this.state.contacts;
-    const prevContactsList = prevState.contacts;
+  // componentDidMount() {
+  //   const contactsList = localStorage.getItem('contactsList');
+  //   const parsedContactsList = JSON.parse(contactsList);
 
-    if (nextContactsList !== prevContactsList) {
-      console.log(
-        'Обновилось поле contactsList, записываю ContactsList в хранилище'
-      );
-      localStorage.setItem('contactsList', JSON.stringify(nextContactsList));
-    }
-  }
+  //   if (parsedContactsList) {
+  //     this.setState({ contacts: parsedContactsList });
+  //   }
+  // }
 
-  addContact = ({ name, number }) => {
+  // componentDidUpdate(prevState) {
+  //   const nextContactsList = this.state.contacts;
+  //   const prevContactsList = prevState.contacts;
+
+  //   if (nextContactsList !== prevContactsList) {
+  //     console.log(
+  //       'Обновилось поле contactsList, записываю ContactsList в хранилище'
+  //     );
+  //     localStorage.setItem('contactsList', JSON.stringify(nextContactsList));
+  //   }
+  // }
+
+  const addContact = ({ name, number }) => {
     const contact = {
       id: nanoid(),
       name,
       number,
     };
 
-    const isExist = this.state.contacts.find(contact => contact.name === name);
+    const isExist = contacts.find(contact => contact.name === name);
 
     isExist
       ? alert(`${name} is already in the contacts`)
-      : this.setState(({ contacts }) => ({
-          contacts: [contact, ...contacts],
-        }));
+      : setContacts([contact, ...contacts]);
   };
 
-  deleteContact = contactId => {
+  const deleteContact = contactId => {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
   };
 
-  changeFilter = e => {
-    this.setState({ filter: e.currentTarget.value });
+  const changeFilter = e => {
+    setFilter(e.currentTarget.value);
   };
 
-  getFilteredContacts = () => {
-    const { filter, contacts } = this.state;
+  const getFilteredContacts = () => {
     const normalizedFilter = filter.toLowerCase();
-
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter)
     );
   };
 
-  getSortedContacts = contacts => {
+  const getSortedContacts = contacts => {
     return contacts.sort((x, y) => x.name.localeCompare(y.name));
   };
 
-  render() {
-    const { filter, contacts } = this.state;
-    const filteredContacts = this.getFilteredContacts(contacts);
-    const sortedContacts = this.getSortedContacts(filteredContacts);
-    return (
-      <>
-        <SectionWrap title="Phonebook">
-          <FormAddContact onAddFormSubmit={this.addContact} />
-        </SectionWrap>
-        <SectionWrap title="Contacts">
-          <FilterByName value={filter} onChange={this.changeFilter} />
-          <ContactsList
-            contacts={sortedContacts}
-            deleteContact={this.deleteContact}
-          />
-        </SectionWrap>
-      </>
-    );
-  }
+  const filteredContacts = getFilteredContacts(contacts);
+  const sortedContacts = getSortedContacts(filteredContacts);
+  return (
+    <>
+      <SectionWrap title="Phonebook">
+        <FormAddContact onAddFormSubmit={addContact} />
+      </SectionWrap>
+      <SectionWrap title="Contacts">
+        <FilterByName value={filter} onChange={changeFilter} />
+        <ContactsList contacts={sortedContacts} deleteContact={deleteContact} />
+      </SectionWrap>
+    </>
+  );
 }
 
 export default App;
