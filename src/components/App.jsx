@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContactToState, deleteContactFromState, setFilter } from 'redux/contactsSlice';
+import { addContactToState, deleteContactFromState} from 'redux/contactsSlice';
+import { setFilter } from 'redux/filterSlice';
 import FormAddContact from './FormAddContact';
 import SectionWrap from './SectionWrap';
 import ContactsList from './ContactsList';
